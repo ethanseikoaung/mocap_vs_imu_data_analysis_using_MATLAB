@@ -29,28 +29,28 @@ end
 % is provided to you
 
 % For task 11
-%{
+
 figure;
+subplot(3,1,1);
 plot(telemetry_data.time, telemetry_data.accx, 'g-');
 title("Acceleration in X Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
 grid on;
 
-figure;
+subplot(3,1,2);
 plot(telemetry_data.time, telemetry_data.accy, 'r-');
 title("Acceleration in Y Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
 grid on;
 
-figure;
-plot(telemetry_data.time, telemetry_data.accz, 'y-');
+subplot(3,1,3);
+plot(telemetry_data.time, telemetry_data.accz, 'b-');
 title("Acceleration in Z Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
 grid on;
-%}
 
 % For task 12
 %Calculating velocity 
@@ -86,21 +86,17 @@ end
 
 N = 40;
 % Smooth out the data by moving average
-acc_B_smooth = smoothdata(acc_B,'movmean',N);
 
-%{
-acc_B_smooth = zeros(size(acc_B,1)-N+1,3);
-for a = 1:size(acc_B,1)-N+1
-    acc_B_smooth(a,:) = (sum(acc_B(a:a+N-1,:),1))./N;
-end
-%}
-
+%acc_B_smooth = smoothdata(acc_B, 'movmean', N);
+acc_B_smooth = movmedian(acc_B, [0,N-1],1);
 acc_B_smooth = array2table(acc_B_smooth, "VariableNames",{'time','acc_x','acc_y','acc_z'});
 
 figure;
+
+subplot(3,1,1);
 plot(telemetry_data.time, telemetry_data.accx, 'g-');
 hold on;
-plot(acc_B_smooth.time,acc_B_smooth.acc_x,'r-');
+plot(acc_B_smooth.time,acc_B_smooth.acc_x,'b-');
 title("Acceleration in X Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
@@ -108,10 +104,10 @@ legend('telemetry','mocap');
 grid on;
 hold off;
 
-figure;
+subplot(3,1,2);
 plot(telemetry_data.time, telemetry_data.accy, 'g-');
 hold on;
-plot(acc_B_smooth.time,acc_B_smooth.acc_y,'r-');
+plot(acc_B_smooth.time,acc_B_smooth.acc_y,'b-');
 title("Acceleration in Y Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
@@ -119,10 +115,10 @@ legend('telemetry','mocap');
 grid on;
 hold off;
 
-figure;
+subplot(3,1,3);
 plot(telemetry_data.time, telemetry_data.accz, 'g-');
 hold on;
-plot(acc_B_smooth.time,acc_B_smooth.acc_z,'r-');
+plot(acc_B_smooth.time,acc_B_smooth.acc_z,'b-');
 grid on;
 title("Acceleration in Z Direction Vs Time");
 xlabel('Time (s)');
