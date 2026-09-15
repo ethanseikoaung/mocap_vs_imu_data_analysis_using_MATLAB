@@ -28,7 +28,7 @@ end
 % you might find useful functions like sum() and ypr_to_rotation(), which
 % is provided to you
 
-% For task 12
+% For task 11
 figure;
 plot(telemetry_data.time, telemetry_data.accx, 'g-');
 title("Acceleration in X Direction Vs Time");
@@ -50,7 +50,7 @@ xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
 grid on;
 
-
+% For Task 12
 
 %Calculating velocity 
 vel_E = [];
