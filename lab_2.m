@@ -61,8 +61,7 @@ for k = 1:(length(mocap_data.time)-1)
     vel_E = [vel_E; mocap_data.time(k),(p_k1_E - p_k_E)/(mocap_data.time(k+1)-mocap_data.time(k))];
 end
 
-%Velocity Table
-vel_E = array2table(vel_E,"VariableNames",{'time','vel_x','vel_y','vel_z'});
+vel_E = array2table(vel_E,"VariableNames",{'time','vel_x','vel_y','vel_z'}); %Velocity Table
 
 acc_B = [];
 g = [0,0,-9.81];
@@ -80,13 +79,16 @@ for j = 1:(length(vel_E.time)-1)
 end
 
 
-N = 40;
 % Smooth out the data by moving average
+N = 40;
+acc_B_smooth = smoothdata(acc_B,'movmean',N);
 
+%{
 acc_B_smooth = zeros(size(acc_B,1)-N+1,3);
 for a = 1:size(acc_B,1)-N+1
     acc_B_smooth(a,:) = (sum(acc_B(a:a+N-1,:),1))./N;
 end
+%}
 
 acc_B_smooth = [mocap_data.time(1:size(acc_B_smooth,1)),acc_B_smooth];
 acc_B_smooth = array2table(acc_B_smooth, "VariableNames",{'time','acc_x','acc_y','acc_z'});
