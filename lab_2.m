@@ -29,6 +29,7 @@ end
 % is provided to you
 
 % For task 11
+%{
 figure;
 plot(telemetry_data.time, telemetry_data.accx, 'g-');
 title("Acceleration in X Direction Vs Time");
@@ -49,19 +50,20 @@ title("Acceleration in Z Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
 grid on;
+%}
 
-% For Task 12
-
+% For task 12
 %Calculating velocity 
 vel_E = [];
 
 for k = 1:(length(mocap_data.time)-1)
     p_k_E = [mocap_data.posx(k), mocap_data.posy(k), mocap_data.posz(k)];
     p_k1_E = [mocap_data.posx(k+1), mocap_data.posy(k+1), mocap_data.posz(k+1)];
-    vel_E = [vel_E; mocap_data.time(k),(p_k1_E - p_k_E)/(mocap_data.time(k+1)-mocap_data.time(k))];
+    vel_E = [vel_E; (mocap_data.time(k)+mocap_data.time(k+1))/2,(p_k1_E - p_k_E)/(mocap_data.time(k+1)-mocap_data.time(k))];
 end
 
-vel_E = array2table(vel_E,"VariableNames",{'time','vel_x','vel_y','vel_z'}); %Velocity Table
+%Velocity Table
+vel_E = array2table(vel_E,"VariableNames",{'time','vel_x','vel_y','vel_z'});
 
 acc_B = [];
 g = [0,0,-9.81];
@@ -70,17 +72,20 @@ for j = 1:(length(vel_E.time)-1)
     v_j_E = [vel_E.vel_x(j),vel_E.vel_y(j),vel_E.vel_z(j)];
     v_j1_E = [vel_E.vel_x(j+1),vel_E.vel_y(j+1),vel_E.vel_z(j+1)];
     acc_j_E = ((v_j1_E-v_j_E)/(vel_E.time(j+1)-vel_E.time(j)))-g;
-    %Using the function from GSI to find the transformation matrix
+
+    %Using the function from GSI to find the transformation matrix.
     yaw_j = deg2rad(mocap_data.attyaw(j));
     pitch_j = deg2rad(mocap_data.attpitch(j));
     roll_j = deg2rad(mocap_data.attroll(j));
     [T_j_EB,T_j_BE] = ypr_to_rotation(yaw_j, pitch_j, roll_j);
-    acc_B = [acc_B; (T_j_BE*(acc_j_E)')'];
+
+    %Computing the acceleration in the body frame. 
+    acc_B = [acc_B; (vel_E.time(j)+vel_E.time(j+1))/2,(T_j_BE*(acc_j_E)')'];
 end
 
 
-% Smooth out the data by moving average
 N = 40;
+% Smooth out the data by moving average
 acc_B_smooth = smoothdata(acc_B,'movmean',N);
 
 %{
@@ -90,7 +95,6 @@ for a = 1:size(acc_B,1)-N+1
 end
 %}
 
-acc_B_smooth = [mocap_data.time(1:size(acc_B_smooth,1)),acc_B_smooth];
 acc_B_smooth = array2table(acc_B_smooth, "VariableNames",{'time','acc_x','acc_y','acc_z'});
 
 figure;
@@ -100,6 +104,7 @@ plot(acc_B_smooth.time,acc_B_smooth.acc_x,'r-');
 title("Acceleration in X Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
+legend('telemetry','mocap');
 grid on;
 hold off;
 
@@ -110,6 +115,7 @@ plot(acc_B_smooth.time,acc_B_smooth.acc_y,'r-');
 title("Acceleration in Y Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
+legend('telemetry','mocap');
 grid on;
 hold off;
 
@@ -121,5 +127,6 @@ grid on;
 title("Acceleration in Z Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
+legend('telemetry','mocap');
 grid on;
 hold off;
