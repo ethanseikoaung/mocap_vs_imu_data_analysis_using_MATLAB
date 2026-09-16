@@ -1,7 +1,10 @@
 clc, clear, close all
 
-mocap_data = readtable('D:\Downloads\wed-23-mocap.csv');
-telemetry_data = readtable('D:\Downloads\wed-23-telemetry.csv');
+addpath(genpath('data')); %Adds relative file path of project resources
+addpath(genpath('functions')); %Adds relative file path of project functions 
+
+mocap_data = readtable('wed-23-mocap.csv');
+telemetry_data = readtable('wed-23-telemetry.csv');
 
 % Check if the tables contain the expected columns
 % the units are meters for the positions
@@ -97,6 +100,9 @@ subplot(3,1,1);
 plot(telemetry_data.time, telemetry_data.accx, 'g-');
 hold on;
 plot(acc_B_smooth.time,acc_B_smooth.acc_x,'b-');
+annotation("textarrow", [0.3874 0.3974], [0.7442 0.8083], "String", "Spinning: 49 ≤ t ≤ 58")
+annotation("textarrow", [0.5961 0.6205], [0.7359 0.8131], "String", "Freefall: 58 < t")
+annotation("textarrow", [0.1714 0.1313], [0.7466 0.8143], "String", "Slow walk: 0 ≤ t < 49")
 title("Acceleration in X Direction Vs Time");
 xlabel('Time (s)');
 ylabel('Acceleration (m/s^2)');
