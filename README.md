@@ -1,1 +1,1 @@
-# mocap_vs_imu_data_analysis_using_MATLAB
+# Motion Capture System Vs Accelerometer Data Analysis using MATLAB
